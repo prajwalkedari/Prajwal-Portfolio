@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Projects — Prajwal Kedari</title>
+  <meta name="description" content="All 21 projects by Prajwal Kedari — ML, backend, automation, systems, NLP, and IoT." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+
+<div class="grain-overlay"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="cursor-dot" id="cursor-dot"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- NAV -->
+<header class="nav-header" id="nav-header">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">PK<span class="accent">.</span></a>
+    <nav class="nav-links">
+      <a href="../index.html#about"   class="link-underline nav-link">About</a>
+      <a href="../index.html#projects" class="link-underline nav-link">Projects</a>
+      <a href="../index.html#impact"  class="link-underline nav-link">Impact</a>
+      <a href="../index.html#contact" class="link-underline nav-link">Contact</a>
+      <a href="index.html"            class="link-underline nav-link" style="color:var(--fg)">All Projects</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="../index.html#contact" class="btn-hire">Hire Me</a>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main style="position:relative;z-index:10;padding: 8rem 1.5rem 6rem;">
+  <div class="container">
+    <a href="../index.html" class="back-link">← Back home</a>
+
+    <div class="reveal in-view">
+      <div class="section-eyebrow mono">21 projects</div>
+      <h1 class="section-title">Everything I've built.</h1>
+      <p class="section-subtitle">Filter by domain. Click any card for the full case study.</p>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="reveal in-view filter-bar" id="filter-bar">
+      <button class="filter-btn active" data-filter="All">All</button>
+      <button class="filter-btn" data-filter="ML">ML</button>
+      <button class="filter-btn" data-filter="Backend">Backend</button>
+      <button class="filter-btn" data-filter="Automation">Automation</button>
+      <button class="filter-btn" data-filter="Systems">Systems</button>
+      <button class="filter-btn" data-filter="Web">Web</button>
+      <button class="filter-btn" data-filter="IoT">IoT</button>
+      <button class="filter-btn" data-filter="NLP">NLP</button>
+    </div>
+
+    <!-- GRID -->
+    <div class="all-projects-grid" id="all-projects-grid"></div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p class="mono footer-text">prajwal kedari · b.e. computer engineering (ai &amp; ml) · bharat college of engineering · mumbai · 2026</p>
+  <div class="footer-links">
+    <a href="https://github.com/prajwalkedari"  target="_blank" rel="noopener" class="footer-link mono">⊞ GitHub</a>
+    <a href="https://linkedin.com/in/prajwalkedari" target="_blank" rel="noopener" class="footer-link mono">💼 LinkedIn</a>
+    <a href="https://kaggle.com/prajwalkedari"  target="_blank" rel="noopener" class="footer-link mono">📊 Kaggle</a>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box" id="modal-box">
+    <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script src="../projects-data.js"></script>
+<script>
+/* ---- CUSTOM CURSOR ---- */
+const dot  = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let mx = -100, my = -100, rx = -100, ry = -100;
+if (dot && ring) {
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  const lerp = (a, b, t) => a + (b - a) * t;
+  (function animateCursor() {
+    rx = lerp(rx, mx, 0.12); ry = lerp(ry, my, 0.12);
+    dot.style.left  = mx + 'px'; dot.style.top  = my + 'px';
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animateCursor);
+  })();
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => { dot.classList.add('active'); ring.classList.add('active'); });
+    el.addEventListener('mouseleave', () => { dot.classList.remove('active'); ring.classList.remove('active'); });
+  });
+}
+
+/* ---- NAV ---- */
+const navHeader = document.getElementById('nav-header');
+const onScroll = () => navHeader && navHeader.classList.toggle('scrolled', window.scrollY > 12);
+onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
+
+/* ---- BADGE TONE CLASS ---- */
+function toneClass(tone) {
+  const map = { gold:'badge-gold', teal:'badge-teal', purple:'badge-purple', green:'badge-green', orange:'badge-orange', coral:'badge-coral' };
+  return map[tone] || 'badge-purple';
+}
+
+/* ---- MODAL ---- */
+const modalOverlay = document.getElementById('modal-overlay');
+const modalContent = document.getElementById('modal-content');
+const modalClose   = document.getElementById('modal-close');
+
+function openModal(slug) {
+  const p = getProject(slug);
+  if (!p || !modalOverlay) return;
+  modalContent.innerHTML = `
+    <div class="modal-header">
+      <div class="modal-badges">
+        <span class="project-badge ${toneClass(p.badge.tone)}">${p.badge.label}</span>
+        <span class="modal-metric">${p.metric}</span>
+      </div>
+      <div class="modal-title">${p.title}</div>
+      <div class="modal-liner">${p.oneLiner}</div>
+    </div>
+    <div class="modal-body">
+      <div><div class="modal-section-label">Overview</div><p class="modal-section-text">${p.overview}</p></div>
+      <div><div class="modal-section-label">Problem</div><p class="modal-section-text">${p.problem}</p></div>
+      <div><div class="modal-section-label">Solution</div><p class="modal-section-text">${p.solution}</p></div>
+      <div>
+        <div class="modal-section-label">Architecture</div>
+        <ul class="modal-list">${p.architecture.map(a => `<li><span class="modal-arrow">→</span><span>${a}</span></li>`).join('')}</ul>
+      </div>
+      <div>
+        <div class="modal-section-label">Key Features</div>
+        <ul class="modal-list modal-grid-2">${p.features.map(f => `<li><span class="modal-arrow">→</span><span>${f}</span></li>`).join('')}</ul>
+      </div>
+      <div>
+        <div class="modal-section-label">Results / Impact</div>
+        <ul class="modal-list">${p.results.map(r => `<li><span class="modal-check">✓</span><span>${r}</span></li>`).join('')}</ul>
+      </div>
+      <div>
+        <div class="modal-section-label">Tech Stack</div>
+        <div class="modal-tags">${p.tech.map(t => `<span class="modal-tag">${t}</span>`).join('')}</div>
+      </div>
+      ${p.links && p.links.length ? `<div class="modal-links">${p.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener" class="modal-ext-link">↗ ${l.label}</a>`).join('')}</div>` : ''}
+    </div>`;
+  modalOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  modalOverlay && modalOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+modalClose   && modalClose.addEventListener('click', closeModal);
+modalOverlay && modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ---- RENDER PROJECT CARD ---- */
+function renderCard(p) {
+  const isFlagship = p.slug === 'smartshield-ai';
+  return `<div class="project-card ${isFlagship ? 'flagship' : ''}" data-slug="${p.slug}" tabindex="0">
+    ${isFlagship ? '<span class="featured-badge">✦ Featured</span>' : ''}
+    <div class="project-header">
+      <span class="project-badge ${toneClass(p.badge.tone)}">${p.badge.label}</span>
+      <span class="project-arrow-btn">↗</span>
+    </div>
+    <h3 class="project-title">${p.title}</h3>
+    <p class="project-liner">${p.oneLiner}</p>
+    <p class="project-metric">${p.metric}</p>
+    <div class="project-techs">${p.tech.slice(0, 3).map(t => `<span class="project-tech">${t}</span>`).join('')}</div>
+    <div class="project-view-hint">View Details ↗</div>
+  </div>`;
+}
+
+/* ---- FILTER LOGIC ---- */
+let currentFilter = 'All';
+
+function renderGrid() {
+  const grid = document.getElementById('all-projects-grid');
+  if (!grid) return;
+  const filtered = currentFilter === 'All' ? projects : projects.filter(p => p.categories.includes(currentFilter));
+  grid.innerHTML = filtered.map(renderCard).join('');
+  grid.querySelectorAll('.project-card').forEach(card => {
+    card.addEventListener('click', () => openModal(card.dataset.slug));
+    card.addEventListener('keydown', e => { if (e.key === 'Enter') openModal(card.dataset.slug); });
+  });
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    renderGrid();
+  });
+});
+
+renderGrid();
+</script>
+</body>
+</html>
