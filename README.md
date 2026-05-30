@@ -1,7 +1,7 @@
 # 🚀 Prajwal Kedari - Portfolio
 
-🌐 Live Website: PrajwalKedar.is-a.Dev
-https://prajwalkedari.vercel.app
+🌐 Live Website: [PrajwalKedar.is-a.Dev](https://PrajwlKedari.is-a.dev) <br>
+[Alternatives Link Vercel](https://prajwalkedari.vercel.app)
 
 ---
 
